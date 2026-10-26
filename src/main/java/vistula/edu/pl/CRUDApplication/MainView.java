@@ -24,15 +24,18 @@ public class MainView extends VerticalLayout {
 
 	private final Button addNewBtn;
 
+	private final Button clearFilterBtn;
+
 	public MainView(CustomerRepository repo, CustomerEditor editor) {
 		this.repo = repo;
 		this.editor = editor;
 		this.grid = new Grid<>(Customer.class);
 		this.filter = new TextField();
 		this.addNewBtn = new Button("Add customer", VaadinIcon.PLUS.create());
+		this.clearFilterBtn = new Button("Clear filter");
 
 		// build layout
-		HorizontalLayout actions = new HorizontalLayout(filter, addNewBtn);
+		HorizontalLayout actions = new HorizontalLayout(filter, clearFilterBtn, addNewBtn);
 		add(new H2("Customer Management"), actions, grid, editor);
 
 		grid.setHeight("300px");
@@ -46,6 +49,9 @@ public class MainView extends VerticalLayout {
 		// Replace listing with filtered content when user changes filter
 		filter.setValueChangeMode(ValueChangeMode.LAZY);
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
+
+		// clearing the field triggers the listener above, which reloads all customers
+		clearFilterBtn.addClickListener(e -> filter.clear());
 
 		// Connect selected Customer to editor or hide if none is selected
 		grid.asSingleSelect().addValueChangeListener(e -> {
