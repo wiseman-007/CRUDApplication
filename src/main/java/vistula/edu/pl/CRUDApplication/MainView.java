@@ -3,6 +3,7 @@ package vistula.edu.pl.CRUDApplication;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,6 +11,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Route
 public class MainView extends VerticalLayout {
@@ -26,6 +29,9 @@ public class MainView extends VerticalLayout {
 
 	private final Button clearFilterBtn;
 
+	// shows how many customers are currently displayed
+	private final Span customerCount = new Span();
+
 	public MainView(CustomerRepository repo, CustomerEditor editor) {
 		this.repo = repo;
 		this.editor = editor;
@@ -36,7 +42,7 @@ public class MainView extends VerticalLayout {
 
 		// build layout
 		HorizontalLayout actions = new HorizontalLayout(filter, clearFilterBtn, addNewBtn);
-		add(new H2("Customer Management"), actions, grid, editor);
+		add(new H2("Customer Management"), actions, customerCount, grid, editor);
 
 		grid.setHeight("300px");
 		grid.setColumns("id", "firstName", "lastName", "email");
@@ -73,11 +79,14 @@ public class MainView extends VerticalLayout {
 
 	// tag::listCustomers[]
 	void listCustomers(String filterText) {
+		List<Customer> customers;
 		if (StringUtils.hasText(filterText)) {
-			grid.setItems(repo.findByLastNameStartsWithIgnoreCase(filterText));
+			customers = repo.findByLastNameStartsWithIgnoreCase(filterText);
 		} else {
-			grid.setItems(repo.findAll());
+			customers = repo.findAll();
 		}
+		grid.setItems(customers);
+		customerCount.setText("Customers shown: " + customers.size());
 	}
 	// end::listCustomers[]
 
