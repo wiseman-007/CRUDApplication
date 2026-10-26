@@ -5,6 +5,7 @@ import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -73,11 +74,13 @@ public class CustomerEditor extends VerticalLayout implements KeyNotifier {
 
 	void delete() {
 		repository.delete(customer);
+		Notification.show("Customer deleted");
 		changeHandler.onChange();
 	}
 
 	void save() {
 		repository.save(customer);
+		Notification.show("Customer saved");
 		changeHandler.onChange();
 	}
 
